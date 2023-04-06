@@ -2,14 +2,16 @@ import csv
 import math
 from os import listdir
 
-input_dir = "C:/Users/joshu/Documents/Projects/gfa-scroller-script/"
-output_dir = "//192.168.33.13/ChampionData/ScrollerControl/scrollers/"
+inputDir = "C:/Users/joshu/Documents/Projects/gfa-scroller-script/"
+outputDir = "//192.168.33.13/ChampionData/ScrollerControl/scrollers/"
 
+scrollerPrefix = "scroller_"
 filename = input("File Name: ")
 
 
 def current_num():
-    lst = [string.lstrip("scroller_").rstrip(".csv") for string in listdir(output_dir)]
+    """ Find the last number of the scrollers currently in the output dir """
+    lst = [string.lstrip(scrollerPrefix).rstrip(".csv") for string in listdir(outputDir)]
     retval = []
 
     for string in lst:
@@ -24,7 +26,7 @@ def current_num():
         return max(retval) + 1
 
 
-with open(input_dir + filename + '.csv', "r") as file:
+with open(inputDir + filename + '.csv', "r") as file:
     reader = csv.reader(file)
     lst = []
 
@@ -39,9 +41,9 @@ with open(input_dir + filename + '.csv', "r") as file:
             # Output file
 
             # Filename
-            scrollerName = "scroller_" + '0' * (2 - math.floor(math.log(j, 10))) + str(j) + '.csv'
+            scrollerName = scrollerPrefix + '0' * (3 - math.floor(math.log(j, 10))) + str(j) + '.csv'
 
-            with open(output_dir + scrollerName, "w", newline='') as scrollerFile:
+            with open(outputDir + scrollerName, "w", newline='') as scrollerFile:
                 writer = csv.writer(scrollerFile)
                 writer.writerow(header)
                 writer.writerows(lst)
