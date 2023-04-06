@@ -1,4 +1,5 @@
 import csv
+import math
 
 input_dir = "C:/Users/joshu/Documents/Projects/gfa-scroller-script/"
 output_dir = "//192.168.33.13/ChampionData/ScrollerControl/scrollers/"
@@ -10,7 +11,7 @@ with open(input_dir + filename + '.csv', "r") as file:
     lst = []
 
     i = 0   # Row num
-    j = 0   # File num
+    j = 1   # File num
     header = ['NAME', 'AMOUNT']   # Header Row
     next(reader)
     for row in reader:
@@ -18,7 +19,10 @@ with open(input_dir + filename + '.csv', "r") as file:
         row[1] = "".join(row[1].split(','))
         if i == 50:
             # Output file
-            scrollerName = "scroller_" + str(j) + ".csv"
+
+            # Filename
+            scrollerName = "scroller_" + '0' * (2 - math.floor(math.log(j, 10))) + str(j) + '.csv'
+
             with open(output_dir + scrollerName, "w", newline='') as scrollerFile:
                 writer = csv.writer(scrollerFile)
                 writer.writerow(header)
