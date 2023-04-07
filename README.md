@@ -1,36 +1,22 @@
 # Good Friday Appeal Scroller Script
 
-Converts a .csv with rows constiting of name and amount
+Converts a .xlsx with rows constiting of name and amount
 to multiple .csv with 50 lines per file
 
-**To Run:** Set input and output directories
+**To Run:** Download main.py, install dependencies, set input and output directories.
 
 ## Formats
 
 ### Dropbox from Ch7 (Correct 2023)
 
 - Two header rows
-- One xlsx file with all data on one sheet
+- One xlsx file with all data on one sheet (can handle multiple sheets with a config change)
 - Amount is a float
 - No dolar sign prefix
 
 ```
 Good Friday Appeal Donations 2023, 12:00pm
 Name, Amount
-John Smith, 1000.05
-...
-```
-
-### GFA Scroller Script
-
-- Two header rows
-- One xlsx file with all data on one sheet (can also handle split into pages with 50 names by changing format)
-- Amount is a float.
-- No dollar sign prefix
-
-```
-Header 1
-Header 2
 John Smith, 1000.05
 ...
 ```
