@@ -2,11 +2,13 @@ import csv
 from os import listdir
 import pandas as pd
 
-format = "split"
+# Config
+format = "full"
 inputDir = "./"
 outputDir = "./out/"
 scrollerPrefix = "scroller_"
 header = ['NAME', 'AMOUNT']  # Header Row
+outputNumRows = 50
 
 
 def current_num():
@@ -26,57 +28,51 @@ def current_num():
         return max(retval) + 1
 
 
+def format_row(row):
+    """ Convert the formatting of data rows"""
+    return [row[0], "$" + str(round(row[1]))]
+
+
 def convert_full_excel(fname: str):
-    """ Converts an excel file with all data in one sheet"""
-    df1 = pd.read_excel(inputDir + fname + ".xlsx")
-    lst = []
-
-    i = 0  # Row num
-    j = current_num()  # File num
-    for row in df1.values[1:]:
-        row = [row[0], "$" + str(round(row[1]))]
-        if i == 50:
-            # Output file
-
-            # Filename
-            scrollerName = scrollerPrefix + '0' * (4 - len(str(j))) + str(j) + '.csv'
-            print(scrollerName)
-            with open(outputDir + scrollerName, "w", newline='') as scrollerFile:
-                writer = csv.writer(scrollerFile)
-                writer.writerow(header)
-                writer.writerows(lst)
-
-            # Reset Vars
-            lst = []
-            i = 0
-            j += 1
-        else:
-            lst += [row]
-            i += 1
+    """ Get data from an excel sheet consisting of one sheet with two header rows"""
+    return pd.read_excel(inputDir + fname + ".xlsx").values[1:]
 
 
 def convert_split_excel(fname: str):
-    """ Converts an excel file with data split into sheets"""
+    """ Get data from an excel sheet consisting of multiple sheets with two header rows"""
     df1 = pd.read_excel(inputDir + fname + ".xlsx", sheet_name=None)
-    j = current_num()
+    retval = []
     array = list(df1.values())
+    for df in array:
+        for row in df.values[1:]:
+            retval.append(row)
 
-    for row in array:
-        # output file name
-        scrollerName = scrollerPrefix + '0' * (4 - len(str(j))) + str(j) + '.csv'
+    return retval
+
+
+def write_output_file(array):
+    """ Write the data in array to output files"""
+    j = current_num()  # File num
+    for i in range(len(array) // outputNumRows):
+        data = array[i * outputNumRows: (i + 1) * outputNumRows + 1]
+        scrollerName = scrollerPrefix + '0' * (4 - len(str(j + i))) + str(j + i) + '.csv'
         print(scrollerName)
+
+        # Output File
         with open(outputDir + scrollerName, "w", newline='') as scrollerFile:
             writer = csv.writer(scrollerFile)
             writer.writerow(header)
-            writer.writerows([[name, "$" + str(amount)] for name, amount in row.values[1:52]])
-        j += 1
+            writer.writerows([format_row(row) for row in data])
 
 
-filename = input("File Name: ")
+if __name__ == "__main__":
+    filename = input("File Name: ")
 
-if format == "full":
-    convert_full_excel(filename)
-elif format == "split":
-    convert_split_excel(filename)
-else:
-    print("Error: Unknown Format")
+    if format == "full":
+        df = convert_full_excel(filename)
+    elif format == "split":
+        df = convert_split_excel(filename)
+    else:
+        raise ValueError("Unknown Format")
+
+    write_output_file(df)
