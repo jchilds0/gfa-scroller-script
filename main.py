@@ -1,12 +1,12 @@
 import csv
-import math
 from os import listdir
+import pandas as pd
 
-inputDir = "C:/Users/joshu/Documents/Projects/gfa-scroller-script/"
-outputDir = "//192.168.33.13/ChampionData/ScrollerControl/scrollers/"
-
+format = "full"
+inputDir = "./"
+outputDir = "./out/"
 scrollerPrefix = "scroller_"
-filename = input("File Name: ")
+header = ['NAME', 'AMOUNT']  # Header Row
 
 
 def current_num():
@@ -26,23 +26,21 @@ def current_num():
         return max(retval) + 1
 
 
-with open(inputDir + filename + '.csv', "r") as file:
-    reader = csv.reader(file)
+def convert_full_excel(fname: str):
+    """ Converts an excel file with all data in one sheet"""
+    df1 = pd.read_excel(inputDir + fname + ".xlsx")
     lst = []
 
-    i = 0   # Row num
-    j = current_num()   # File num
-    header = ['NAME', 'AMOUNT']   # Header Row
-    next(reader)
-    for row in reader:
-        row = row[:2]       # Remove last column
-        row[1] = "".join(row[1].split(','))
+    i = 0  # Row num
+    j = current_num()  # File num
+    for row in df1.values[1:]:
+        row = [row[0], "$" + str(round(row[1]))]
         if i == 50:
             # Output file
 
             # Filename
-            scrollerName = scrollerPrefix + '0' * (3 - math.floor(math.log(j, 10))) + str(j) + '.csv'
-
+            scrollerName = scrollerPrefix + '0' * (4 - len(str(j))) + str(j) + '.csv'
+            print(scrollerName)
             with open(outputDir + scrollerName, "w", newline='') as scrollerFile:
                 writer = csv.writer(scrollerFile)
                 writer.writerow(header)
@@ -55,3 +53,34 @@ with open(inputDir + filename + '.csv', "r") as file:
         else:
             lst += [row]
             i += 1
+
+
+def convert_split_excel(fname: str):
+    """ Converts an excel file with data split into sheets labelled x-x+50"""
+    df1 = pd.read_excel(inputDir + fname + ".xlsx", sheet_name=None)
+    j = current_num()
+
+    for i in range(len(df1)):
+        # Format dict key (corresponds to sheet name)
+        if i == 0:
+            key = "{}-{}".format(0, 50)
+        else:
+            key = "{}-{}".format(i * 50 + 1, (i + 1) * 50)
+
+        # output file name
+        scrollerName = scrollerPrefix + '0' * (4 - len(str(j))) + str(j) + '.csv'
+        print(scrollerName)
+        with open(outputDir + scrollerName, "w", newline='') as scrollerFile:
+            writer = csv.writer(scrollerFile)
+            writer.writerow(header)
+            writer.writerows([[name, "$" + str(amount)] for name, amount in df1[key].values[1:][:50]])
+
+
+filename = input("File Name: ")
+
+if format == "full":
+    convert_full_excel(filename)
+elif format == "split":
+    convert_split_excel(filename)
+else:
+    print("Error: Unknown Format")
