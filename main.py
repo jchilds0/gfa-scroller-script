@@ -7,7 +7,7 @@ format = "full"
 inputDir = "./"
 outputDir = "./out/"
 scrollerPrefix = "scroller_"
-header = ['NAME', 'AMOUNT']  # Header Row
+header = ['t_text_1', 't_text_2', 't_text_3']  # Header Row
 outputNumRows = 50
 
 
@@ -30,6 +30,16 @@ def current_num():
 
 def format_row(row):
     """ Convert the formatting of data rows"""
+    return [row[0], "$" + str(round(row[1])), ""]
+
+
+def format_table(df):
+    formatted = []
+    for row in df:
+        formatted.append(format_row(row))
+
+    return formatted
+
 
 def convert_full_excel(fname: str):
     """ Get data from an excel sheet consisting of one sheet with two header rows"""
@@ -73,4 +83,6 @@ if __name__ == "__main__":
     else:
         raise ValueError("Unknown Format")
 
-    write_output_file(df)
+    new = format_table(df)
+
+    write_output_file(new)
