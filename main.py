@@ -7,6 +7,7 @@ format = "full"
 inputDir = "./"
 outputDir = "./out/"
 scrollerPrefix = "scroller_"
+sheetName = "PLEDGES"
 header = ['t_text_1', 't_text_2', 't_text_3']  # Header Row
 outputNumRows = 50
 
@@ -30,7 +31,7 @@ def current_num():
 
 def format_row(row):
     """ Convert the formatting of data rows"""
-    return [row[0], "$" + str(round(row[1])), ""]
+    return [row[0], round(float(row[1])), ""]
 
 
 def format_table(df):
@@ -52,7 +53,7 @@ def convert_split_excel(fname: str):
     retval = []
     array = list(df1.values())
     for df in array:
-        for row in df.values[1:]:
+        for row in df.values[2:]:
             retval.append(row)
 
     return retval
@@ -67,22 +68,26 @@ def write_output_file(array):
 
         data = array[start : end]
 
-        scrollerName = scrollerPrefix + '0' * (4 - len(str(j + i))) + str(j + i) + ".xlsx"
+        scrollerName = scrollerPrefix + '0' * (3 - len(str(j + i))) + str(j + i) + ".xlsx"
         print(scrollerName)
         df = pd.DataFrame(data, columns=header)
-        df.to_excel(outputDir + scrollerName, index=False)
+        df.to_excel(outputDir + scrollerName, index=False, sheet_name=sheetName)
 
 
 if __name__ == "__main__":
-    filename = input("File Name: ")
+    while True:
+        filename = input("File Name: ")
 
-    if format == "full":
-        df = convert_full_excel(filename)
-    elif format == "split":
-        df = convert_split_excel(filename)
-    else:
-        raise ValueError("Unknown Format")
+        try:
+            if format == "full":
+                df = convert_full_excel(filename)
+            elif format == "split":
+                df = convert_split_excel(filename)
+            else:
+                raise ValueError("Unknown Format")
 
-    new = format_table(df)
+            new = format_table(df)
+            write_output_file(new)
+        except Exception as e:
+            print(e)
 
-    write_output_file(new)
