@@ -13,7 +13,7 @@ outputNumRows = 50
 
 def current_num():
     """ Find the last number of the scrollers currently in the output dir """
-    lst = [string.lstrip(scrollerPrefix).rstrip(".csv") for string in listdir(outputDir)]
+    lst = [string.lstrip(scrollerPrefix).rstrip(".xlsx") for string in listdir(outputDir)]
     retval = []
 
     for string in lst:
@@ -30,8 +30,6 @@ def current_num():
 
 def format_row(row):
     """ Convert the formatting of data rows"""
-    return [row[0], "$" + str(round(row[1]))]
-
 
 def convert_full_excel(fname: str):
     """ Get data from an excel sheet consisting of one sheet with two header rows"""
@@ -54,15 +52,15 @@ def write_output_file(array):
     """ Write the data in array to output files"""
     j = current_num()  # File num
     for i in range(len(array) // outputNumRows):
-        data = array[i * outputNumRows: (i + 1) * outputNumRows + 1]
-        scrollerName = scrollerPrefix + '0' * (4 - len(str(j + i))) + str(j + i) + '.csv'
-        print(scrollerName)
+        start = i * outputNumRows
+        end = (i + 1) * outputNumRows + 1
 
-        # Output File
-        with open(outputDir + scrollerName, "w", newline='') as scrollerFile:
-            writer = csv.writer(scrollerFile)
-            writer.writerow(header)
-            writer.writerows([format_row(row) for row in data])
+        data = array[start : end]
+
+        scrollerName = scrollerPrefix + '0' * (4 - len(str(j + i))) + str(j + i) + ".xlsx"
+        print(scrollerName)
+        df = pd.DataFrame(data, columns=header)
+        df.to_excel(outputDir + scrollerName, index=False)
 
 
 if __name__ == "__main__":
