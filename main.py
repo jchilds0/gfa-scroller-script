@@ -37,7 +37,14 @@ def format_row(row):
 def format_table(df):
     formatted = []
     for row in df:
-        formatted.append(format_row(row))
+        try: 
+            newRow = format_row(row)
+        except Exception as e:
+            print(e)
+            print("Row: ", row)
+            continue
+
+        formatted.append(newRow)
 
     return formatted
 
@@ -53,7 +60,7 @@ def convert_split_excel(fname: str):
     retval = []
     array = list(df1.values())
     for df in array:
-        for row in df.values[2:]:
+        for row in df.values[1:]:
             retval.append(row)
 
     return retval
