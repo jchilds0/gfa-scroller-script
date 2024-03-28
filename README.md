@@ -7,6 +7,11 @@ to multiple .csv with 50 lines per file
 
 ## Formats
 
+### 2024 Update
+
+- Config File: Duplicate default.ini and rename to ticker.ini
+- Outputs an xlsx file with a single sheet.
+
 ### Dropbox from Ch7 (Correct 2023)
 
 - Two header rows
