@@ -1,9 +1,30 @@
 # Good Friday Appeal Scroller Script
 
 Converts a .xlsx with rows constiting of name and amount
-to multiple .csv with 50 lines per file
+to multiple .xlsx with 50 lines per file
 
-**To Run:** Download main.py, install dependencies, set input and output directories.
+## Quickstart
+
+Clone repo.
+
+```
+git clone https://github.com/jchilds0/gfa-scroller-script
+cd gfa-scroller-script
+```
+
+Configure options in `default.ini` and rename to `ticker.ini`
+
+Setup python virtual environment and install dependencies.
+```
+python -m venv venv
+source venv/bin/activate # ./venv/Scripts/activate.bat on Windows
+pip install -r requirements.txt
+```
+
+Run script 
+```
+python main.py
+```
 
 ## Formats
 
