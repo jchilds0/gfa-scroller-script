@@ -8,6 +8,26 @@ config.read('ticker.ini')
 c = config['GFA']
 
 
+def main():
+    rows = []
+
+    while True:
+        filename = input("File Name: ")
+
+        try:
+            if c['InputFormat'] == "full":
+                df = convert_full_excel(filename)
+            elif c['InputFormat'] == "split":
+                df = convert_split_excel(filename)
+            else:
+                raise ValueError("Unknown Format")
+
+            rows.append(format_table(df))
+            rows = write_output_file(rows)
+        except Exception as e:
+            print(e)
+
+
 def current_num() -> int:
     """
     Find the last number of the scrollers
@@ -76,16 +96,18 @@ def format_table(df) -> list[list[str]]:
     return formatted
 
 
-def write_output_file(array):
-    """ Write the data in array to output files """
+def write_output_file(array) -> list[list[str]]:
+    """
+    Write the data in array to output files,
+    and return remaining rows
+    """
     header = [c['HeaderCol1'], c['HeaderCol2'], c['HeaderCol3']]
 
     j = current_num()  # File num
-    for i in range(len(array) // int(c['OutputNumRows'])):
-        start = i * int(c['OutputNumRows'])
-        end = (i + 1) * int(c['OutputNumRows']) + 1
-
-        data = array[start:end]
+    i = 0
+    while (len(array) > c['OutputNumRows']):
+        data = array[:c['OutputNumRows']]
+        array = array[c['OutputNumRows']:]
 
         scrollerName = c['ScrollerPrefix']
         scrollerName += '0' * (3 - len(str(j + i))) + str(j + i)
@@ -99,22 +121,10 @@ def write_output_file(array):
             sheet_name=c['SheetName']
         )
 
-    print(f"Num. of unused rows: {len(array) % int(c['OutputNumRows'])}")
+        i += 1
+
+    return array
 
 
 if __name__ == "__main__":
-    while True:
-        filename = input("File Name: ")
-
-        try:
-            if c['InputFormat'] == "full":
-                df = convert_full_excel(filename)
-            elif c['InputFormat'] == "split":
-                df = convert_split_excel(filename)
-            else:
-                raise ValueError("Unknown Format")
-
-            new = format_table(df)
-            write_output_file(new)
-        except Exception as e:
-            print(e)
+    main()
