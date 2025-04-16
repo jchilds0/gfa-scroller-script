@@ -106,7 +106,7 @@ def write_output_file(array) -> list[list[str]]:
     numRows = int(c['OutputNumRows'])
     j = current_num()  # File num
     i = 0
-    while (len(array) > numRows):
+    while (len(array) >= numRows):
         data = array[:numRows]
         array = array[numRows:]
 
