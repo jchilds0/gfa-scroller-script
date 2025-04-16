@@ -22,7 +22,7 @@ def main():
             else:
                 raise ValueError("Unknown Format")
 
-            rows.append(format_table(df))
+            rows += format_table(df)
             rows = write_output_file(rows)
         except Exception as e:
             print(e)
