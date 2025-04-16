@@ -103,11 +103,12 @@ def write_output_file(array) -> list[list[str]]:
     """
     header = [c['HeaderCol1'], c['HeaderCol2'], c['HeaderCol3']]
 
+    numRows = int(c['OutputNumRows'])
     j = current_num()  # File num
     i = 0
-    while (len(array) > c['OutputNumRows']):
-        data = array[:c['OutputNumRows']]
-        array = array[c['OutputNumRows']:]
+    while (len(array) > numRows):
+        data = array[:numRows]
+        array = array[numRows:]
 
         scrollerName = c['ScrollerPrefix']
         scrollerName += '0' * (3 - len(str(j + i))) + str(j + i)
