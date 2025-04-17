@@ -1,5 +1,7 @@
 venv
 out/*.xlsx
-*.xlsx
+out/*.json
+data/*.xlsx
 ticker.ini
+config.ini
 .idea

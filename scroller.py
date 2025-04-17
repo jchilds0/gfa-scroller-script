@@ -4,8 +4,8 @@ import configparser
 
 # Config
 config = configparser.ConfigParser()
-config.read('ticker.ini')
-c = config['GFA']
+config.read('config.ini')
+c = config['Scroller']
 
 
 def main():

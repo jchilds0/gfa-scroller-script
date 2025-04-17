@@ -1,7 +1,8 @@
-# Good Friday Appeal Scroller Script
+# Good Friday Appeal Scripts
 
-Converts a .xlsx with rows constiting of name and amount
-to multiple .xlsx with 50 lines per file
+Converts scroller .xlsx with rows constiting of name and amount
+to multiple .xlsx with 50 lines per file.
+Converts boards .xlsx into a json.
 
 ## Quickstart
 
@@ -12,7 +13,7 @@ git clone https://github.com/jchilds0/gfa-scroller-script
 cd gfa-scroller-script
 ```
 
-Configure options in `default.ini` and rename to `ticker.ini`
+Configure options in `default.ini` and rename to `config.ini`
 
 Setup python virtual environment and install dependencies.
 ```
@@ -23,7 +24,8 @@ pip install -r requirements.txt
 
 Run script 
 ```
-python main.py
+python scroller.py
+python boards.py <filename>
 ```
 
 ## Formats
