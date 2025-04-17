@@ -8,9 +8,6 @@ config = configparser.ConfigParser()
 config.read('config.ini')
 c = config['Boards']
 
-sheetName = c['SheetName']
-table = []
-
 
 def main():
     if len(sys.argv) != 2:
@@ -18,8 +15,29 @@ def main():
         exit(1)
 
     fileName = sys.argv[1]
-    df = pd.read_excel(fileName, sheet_name=sheetName)
+    df = pd.read_excel(fileName, sheet_name=c['SheetName'])
+    table = create_array(df)
 
+    with open(c['OutputFileName'], "w") as file:
+        file.write(json.dumps(table, indent=4))
+
+
+def rankings(df: pd.DataFrame) -> dict[str, int]:
+    """ calculate rank based on the second column of the dataframe """
+    ranking = {}
+    sortRows = sorted(df.values, key=lambda row: row[1], reverse=True)
+    for rank, row in enumerate(sortRows):
+        ranking[row[0]] = rank + 1
+
+    return ranking
+
+
+def create_array(df: pd.DataFrame) -> list:
+    """
+    create array of id, sort id, first column and
+    second column from df
+    """
+    table = []
     ranking = rankings(df)
 
     for id, row in enumerate(df.values):
@@ -30,17 +48,7 @@ def main():
             c["SecondColumn"]: str(row[1]),
         })
 
-    with open(c['OutputFileName'], "w") as file:
-        file.write(json.dumps(table, indent=4))
-
-
-def rankings(df: pd.DataFrame) -> dict[str, int]:
-    ranking = {}
-    sortRows = sorted(df.values, key=lambda row: row[1])
-    for rank, row in enumerate(sortRows):
-        ranking[row[0]] = rank + 1
-
-    return ranking
+    return table
 
 
 if __name__ == "__main__":
