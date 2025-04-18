@@ -15,7 +15,7 @@ def main():
         exit(1)
 
     fileName = sys.argv[1]
-    df = pd.read_excel(fileName, sheet_name=c['SheetName'])
+    df = pd.read_excel(fileName, sheet_name=c['SheetName']).fillna(0)
     table = create_array(df)
 
     with open(c['OutputFileName'], "w") as file:
@@ -26,6 +26,7 @@ def rankings(df: pd.DataFrame) -> dict[str, int]:
     """ calculate rank based on the second column of the dataframe """
     ranking = {}
     sortRows = sorted(df.values, key=lambda row: row[1], reverse=True)
+
     for rank, row in enumerate(sortRows):
         ranking[row[0]] = rank + 1
 
